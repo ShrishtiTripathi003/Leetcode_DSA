@@ -10,6 +10,7 @@ public:
         {
             if(freq[i]==0)
             {
+
                 return false;
             }
         }
