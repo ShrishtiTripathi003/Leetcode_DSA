@@ -1,132 +1,123 @@
 class Solution {
 public:
     vector<int> beautifulIndices(string s, string a, string b, int k) {
-        //making lps
-        vector<int> lps(a.size(),0);
-        int length=0;
+        //making lps for a
+        vector<int> lps1(a.size(),0);
+        int length1=0;
         int i=1;
         while(i<a.size())
         {
-            if(a[length]==a[i])
+            if(a[length1]==a[i])
             {
-                lps[i]=length+1;
-                length++;
+                lps1[i]=length1+1;
+                length1++;
                 i++;
             }
-            else 
+            else
             {
-                if(length!=0)
+                if(length1!=0)
                 {
-                    length=lps[length-1];
-                    
+                    length1=lps1[length1-1];
                 }
-                else 
+                else
                 {
-                    lps[i]=0;
+                    lps1[i]=0;
                     i++;
                 }
             }
         }
-        
+        //making lps2 
         vector<int> lps2(b.size(),0);
-        int length1=0;
-        int i1=1;
-        while(i1<b.size())
+        int l2=0;
+        int i2=1;
+        while(i2<b.size())
         {
-            if(b[length1]==b[i1])
+            if(b[i2]==b[l2])
             {
-                lps2[i1]=length1+1;
-                length1++;
-                i1++;
+                lps2[i2]=l2+1;
+                l2++;
+                i2++;
             }
-            else 
+            else
             {
-                if(length1!=0)
+                if(l2!=0)
                 {
-                    length1=lps2[length1-1];
-                    
+                    l2=lps2[l2-1];
+
                 }
-                else 
+                else
                 {
-                    lps2[i1]=0;
-                    i1++;
+                    lps2[i2]=0;
+                    i2++;
                 }
             }
         }
-        //writing kmp
+        //making kmp for a
+        i=0;
         int j=0;
-        int k1=0;
-        vector<int> indices;
-        while(j<s.size())
+        vector<int> kmp1;
+        while(i<s.size())
         {
-            if(s[j]==a[k1])
+            if(s[i]==a[j])
             {
+                i++;
                 j++;
-                k1++;             
-                if(k1==a.size())
+                if(j==a.size())
                 {
-                    indices.push_back(j-k1);
-                    k1=lps[k1-1];
+                    kmp1.push_back(i-j);
+                    j=lps1[j-1];
                 }
+
             }
             else
             {
-                if(k1!=0)
+                if(j!=0)
                 {
-                    k1=lps[k1-1];
+                    j=lps1[j-1];
                 }
                 else
                 {
-                    j++;
+                    i++;
                 }
             }
         }
+        i=0;
         j=0;
-        k1=0;
-        vector<int> ind;
-        while(j<s.size())
+        vector<int> kmp2;
+        while(i<s.size())
         {
-            if(s[j]==b[k1])
+            if(s[i]==b[j])
             {
+                i++;
                 j++;
-                k1++;
-                if(k1==b.size())
+                if(j==b.size())
                 {
-                    ind.push_back(j-k1);
-                    k1=lps2[k1-1];
-
+                    kmp2.push_back(i-j);
+                    j=lps2[j-1];
                 }
-
             }
             else
             {
-                if(k1!=0)
+                if(j!=0)
                 {
-                    k1=lps2[k1-1];
+                    j=lps2[j-1];
                 }
                 else
                 {
-                    j++;
+                    i++;
                 }
             }
         }
-        vector<int> answer;
-
-        int p = 0;
-
-        for (int x : indices) {
-
-            // Move p until b[p] is not too far to the left
-            while (p < ind.size() && ind[p] < x - k) {
-                p++;
+        vector<int> ans;
+        for(int x:kmp1)
+        {
+            auto y=lower_bound(kmp2.begin(),kmp2.end(),x-k);
+            if(y!=kmp2.end() && *y<=x+k)
+            {
+                ans.push_back(x);
             }
 
-            // If b[p] exists and is within distance k
-            if (p < ind.size() && ind[p] <= x + k) {
-                answer.push_back(x);
-            }
         }
-
-        return answer;
+        return ans;
     }
 };
